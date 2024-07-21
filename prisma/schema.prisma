@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  user_id  String    @id @default(auto()) @map("_id") @db.ObjectId
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
   name     String
   phone    String
   email    String    @unique
@@ -23,23 +23,23 @@ model User {
 }
 
 model Account {
-  account_id     String @id @default(auto()) @map("_id") @db.ObjectId
-  account_number String
-  pin            String
-  balance        Float
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  account_number Int
+  pin            Int
+  balance        Int
+  user           User   @relation(fields: [userId], references: [id])
   userId         String @db.ObjectId
-  user           User   @relation(fields: [userId], references: [user_id])
 
-  transactions Transaction[]
+  Transaction Transaction[]
 }
 
 model Transaction {
-  transaction_id String   @id @default(auto()) @map("_id") @db.ObjectId
-  datetime       DateTime
-  type           String
-  status         String
-  amount         Float
-  metadata       Json
-  accountId      String?  @db.ObjectId
-  account        Account? @relation(fields: [accountId], references: [account_id])
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  datetime  DateTime
+  type      String
+  status    String
+  amount    Int
+  metadata  Json
+  account   Account? @relation(fields: [accountId], references: [id])
+  accountId String?  @db.ObjectId
 }
