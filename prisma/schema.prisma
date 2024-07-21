@@ -12,3 +12,34 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  user_id  String    @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  phone    String
+  email    String    @unique
+  password String
+  accounts Account[]
+}
+
+model Account {
+  account_id     String @id @default(auto()) @map("_id") @db.ObjectId
+  account_number String
+  pin            String
+  balance        Float
+  userId         String @db.ObjectId
+  user           User   @relation(fields: [userId], references: [user_id])
+
+  transactions Transaction[]
+}
+
+model Transaction {
+  transaction_id String   @id @default(auto()) @map("_id") @db.ObjectId
+  datetime       DateTime
+  type           String
+  status         String
+  amount         Float
+  metadata       Json
+  accountId      String?  @db.ObjectId
+  account        Account? @relation(fields: [accountId], references: [account_id])
+}
