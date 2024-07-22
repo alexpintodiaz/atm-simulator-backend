@@ -17,7 +17,7 @@ model User {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
   email    String    @unique
   name     String
-  phone    String?
+  phone    Int?
   password String
   accounts Account[]
 }
@@ -39,7 +39,7 @@ model Transaction {
   type      String
   status    String
   amount    Int
-  metadata  Json
+  metadata  Json?
   account   Account? @relation(fields: [accountId], references: [id])
   accountId String?  @db.ObjectId
 }
