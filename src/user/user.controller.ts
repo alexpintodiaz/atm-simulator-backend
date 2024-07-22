@@ -6,6 +6,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Query,
 } from '@nestjs/common'
 import { UserService } from './user.service'
 import { CreateUserDto } from './dto/user.dto'
@@ -30,7 +31,7 @@ export class UserController {
   }
 
   @Delete()
-  deleteUser() {
-    return this.userService.deleteUser()
+  deleteUser(@Query('id') id: string) {
+    return this.userService.deleteUser(id)
   }
 }

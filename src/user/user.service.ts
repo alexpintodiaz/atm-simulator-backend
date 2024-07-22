@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { CreateUserDto } from './dto/user.dto'
 import { PrismaService } from 'prisma/prisma.service'
 
@@ -6,8 +6,12 @@ import { PrismaService } from 'prisma/prisma.service'
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
+  //   getUsers() {
+  //     return ['user1', 'user2']
+  //   }
+
   getUsers() {
-    return ['user1', 'user2']
+    return this.prisma.user.findMany()
   }
 
   getUserById(id: string) {
@@ -19,7 +23,15 @@ export class UserService {
     return result
   }
 
-  deleteUser() {
-    return 'borrando usuario'
+  async deleteUser(id: string) {
+    return this.prisma.user
+      .delete({
+        where: {
+          id: id,
+        },
+      })
+      .catch((error) => {
+        throw new NotFoundException(error)
+      })
   }
 }
