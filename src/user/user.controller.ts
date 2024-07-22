@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Post,
   Query,
 } from '@nestjs/common'
@@ -21,7 +20,7 @@ export class UserController {
   }
 
   @Get('/:id')
-  getUserById(@Param('id', ParseIntPipe) id: string) {
+  getUserById(@Param('id') id: string) {
     return this.userService.getUserById(id)
   }
 
