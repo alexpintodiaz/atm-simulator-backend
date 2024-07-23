@@ -23,7 +23,7 @@ model User {
 
 model Account {
   id             String @id @default(auto()) @map("_id") @db.ObjectId
-  account_number String
+  account_number String @unique
   pin            Int
   balance        Int
   user           User   @relation(fields: [userId], references: [id])
@@ -33,12 +33,23 @@ model Account {
 }
 
 model Transaction {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String          @id @default(auto()) @map("_id") @db.ObjectId
   datetime  DateTime
-  type      String
-  status    String
+  type      TransactionType
+  status    StatusType
   amount    Int
   metadata  Json?
-  account   Account? @relation(fields: [accountId], references: [id])
-  accountId String?  @db.ObjectId
+  account   Account        @relation(fields: [accountId], references: [id])
+  accountId String         @db.ObjectId
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  TRANSFER
+}
+
+enum StatusType {
+  COMPLETED
+  REJECTED
 }
