@@ -18,13 +18,12 @@ model User {
   email    String    @unique
   name     String
   phone    Int?
-  password String
   accounts Account[]
 }
 
 model Account {
   id             String @id @default(auto()) @map("_id") @db.ObjectId
-  account_number Int
+  account_number String
   pin            Int
   balance        Int
   user           User   @relation(fields: [userId], references: [id])
