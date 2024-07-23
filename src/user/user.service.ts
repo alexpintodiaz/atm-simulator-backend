@@ -50,9 +50,8 @@ export class UserService {
   async deleteUser(id: string) {
     return this.prisma.user
       .delete({
-        where: {
-          id: id,
-        },
+        where: { id: id },
+        include: { accounts: true },
       })
       .catch((error) => {
         throw new NotFoundException(error)
