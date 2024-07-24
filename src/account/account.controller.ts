@@ -5,9 +5,14 @@ import { AccountService } from './account.service'
 export class AccountController {
   constructor(private accountService: AccountService) {}
 
-  @Get('/:accountNumber')
+  @Get('balance/:accountNumber')
   getAccountBalance(@Param('accountNumber') accountNumber: string) {
     return this.accountService.getAccountBalance(accountNumber)
+  }
+
+  @Get('/:accountNumber')
+  getAccountByAccountNumber(@Param('accountNumber') accountNumber: string) {
+    return this.accountService.getAccountByAccountNumber(accountNumber)
   }
 
   @Post('deposit/:accountNumber')

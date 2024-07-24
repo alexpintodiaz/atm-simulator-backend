@@ -81,4 +81,10 @@ export class AccountService {
 
     return account
   }
+
+  async getAccountByAccountNumber(accountNumber: string) {
+    return this.prisma.account.findUnique({
+      where: { account_number: accountNumber },
+    })
+  }
 }
