@@ -47,14 +47,32 @@ export class UserService {
     return Math.floor(1000 + Math.random() * 9000).toString()
   }
 
-  async deleteUser(id: string) {
-    return this.prisma.user
-      .delete({
-        where: { id: id },
-        include: { accounts: true },
+  async deleteUser(id: string): Promise<{ message: string }> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: id },
+      include: { accounts: true },
+    })
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`)
+    }
+
+    await this.prisma.$transaction(async (prisma) => {
+      await prisma.transaction.deleteMany({
+        where: {
+          accountId: { in: user.accounts.map((account) => account.id) },
+        },
       })
-      .catch((error) => {
-        throw new NotFoundException(error)
+
+      await prisma.account.deleteMany({
+        where: { userId: id },
       })
+
+      await prisma.user.delete({ where: { id: id } })
+    })
+
+    return {
+      message: `User with ID ${id} has been successfully deleted along with all associated accounts and transactions.`,
+    }
   }
 }
