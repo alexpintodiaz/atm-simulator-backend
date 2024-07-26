@@ -46,7 +46,8 @@ model Transaction {
 enum TransactionType {
   DEPOSIT
   WITHDRAWAL
-  TRANSFER
+  TRANSFER_SENT
+  TRANSFER_RECEIVED
 }
 
 enum StatusType {

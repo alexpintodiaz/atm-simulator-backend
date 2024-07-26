@@ -9,6 +9,7 @@ import {
   StatusType,
   TransactionType,
 } from 'src/transaction/dto/transaction.dto'
+import { RecipientAccountDto } from './dto/account.dto'
 
 @Injectable()
 export class AccountService {
@@ -92,5 +93,52 @@ export class AccountService {
     }
 
     return account
+  }
+
+  async transfer(fromAccountNumber: string, recipient: RecipientAccountDto) {
+    const fromAccount = await this.prisma.account.findUnique({
+      where: { account_number: fromAccountNumber },
+    })
+    const toAccount = await this.prisma.account.findUnique({
+      where: { account_number: recipient.account_number },
+    })
+
+    if (!toAccount) {
+      throw new NotFoundException('Recipient account not found')
+    }
+
+    if (fromAccount.balance < recipient.amount) {
+      throw new BadRequestException('Insufficient funds in the source account')
+    }
+
+    const updateFromAccount = this.prisma.account.update({
+      where: { account_number: fromAccountNumber },
+      data: { balance: { decrement: recipient.amount } },
+    })
+
+    const updateToAccount = this.prisma.account.update({
+      where: { account_number: recipient.account_number },
+      data: { balance: { increment: recipient.amount } },
+    })
+
+    await this.prisma.$transaction([updateFromAccount, updateToAccount])
+
+    await this.transactionService.createTransaction({
+      accountId: fromAccount.id,
+      type: 'TRANSFER_SENT' as TransactionType,
+      amount: recipient.amount,
+      status: 'COMPLETED' as StatusType,
+    })
+
+    await this.transactionService.createTransaction({
+      accountId: toAccount.id,
+      type: 'TRANSFER_RECEIVED' as TransactionType,
+      amount: recipient.amount,
+      status: 'COMPLETED' as StatusType,
+    })
+
+    const newBalance = await this.getAccountBalance(fromAccountNumber)
+
+    return { message: 'Transfer completed successfully', balance: newBalance.balance }
   }
 }
