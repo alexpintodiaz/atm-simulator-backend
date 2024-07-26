@@ -3,7 +3,8 @@ import { IsEnum, IsNumber, IsString, IsOptional } from 'class-validator';
 export enum TransactionType {
   DEPOSIT = 'DEPOSIT',
   WITHDRAWAL = 'WITHDRAWAL',
-  TRANSFER = 'TRANSFER'
+  TRANSFER_SENT = 'TRANSFER_SENT',
+  TRANSFER_RECEIVED = 'TRANSFER_RECEIVED'
 }
 
 export enum StatusType {

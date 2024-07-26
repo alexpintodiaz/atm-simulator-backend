@@ -1,5 +1,6 @@
-import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, Param, Post, Query } from '@nestjs/common'
 import { AccountService } from './account.service'
+import { RecipientAccountDto } from './dto/account.dto'
 
 @Controller('account')
 export class AccountController {
@@ -30,5 +31,15 @@ export class AccountController {
     @Body('amount') amount: number,
   ) {
     return this.accountService.withdraw(accountNumber, amount)
+  }
+
+  @Post('transfer')
+  @HttpCode(200)
+  transfer(
+    @Query('sender') fromAccountNumber: string,
+    @Body() recipient: RecipientAccountDto
+  ) {
+    return this.accountService.transfer(fromAccountNumber, recipient)
+
   }
 }
