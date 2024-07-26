@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common'
 import { AccountService } from './account.service'
 
 @Controller('account')
@@ -16,6 +16,7 @@ export class AccountController {
   }
 
   @Post('deposit/:accountNumber')
+  @HttpCode(200)
   deposit(
     @Param('accountNumber') accountNumber: string,
     @Body('amount') amount: number,
