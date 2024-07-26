@@ -1,7 +1,7 @@
 import {
   Injectable,
   NotFoundException,
-  BadRequestException,
+  NotAcceptableException
 } from '@nestjs/common'
 import { PrismaService } from 'prisma/prisma.service'
 import { TransactionService } from 'src/transaction/transaction.service'
@@ -52,7 +52,7 @@ export class AccountService {
     }
 
     if (account.balance < amount) {
-      throw new BadRequestException('Insufficient funds')
+      throw new NotAcceptableException('Insufficient funds')
     }
 
     const updatedAccount = await this.prisma.account.update({
@@ -108,7 +108,7 @@ export class AccountService {
     }
 
     if (fromAccount.balance < recipient.amount) {
-      throw new BadRequestException('Insufficient funds in the source account')
+      throw new NotAcceptableException('Insufficient funds in the source account')
     }
 
     const updateFromAccount = this.prisma.account.update({
